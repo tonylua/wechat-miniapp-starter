@@ -1,6 +1,6 @@
 {
-  "name": "weapp-super-portal",
-  "version": "0.0.1",
+  "name": "wechat-miniapp-starter",
+  "version": "0.0.2",
   "description": "wechat-miniapp-starter",
   "main": "app.js",
   "scripts": {

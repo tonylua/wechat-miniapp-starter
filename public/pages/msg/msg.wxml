@@ -1,0 +1,14 @@
+<view wx:if="{{ code!=0 }}" class="warn_img">{{ code }}</view>
+<icon wx:else type="success" size="80" class="succ_ico" />
+
+<text>{{ message }}</text>
+
+<view class="buttons">
+  <button 
+    wx:for="{{ buttons }}" 
+    wx:for-item="btn" 
+    wx:key="label"
+    type="{{ btn.type }}" 
+    data-route="{{ btn.route }}"
+    catchtap="onButtonClick">{{ btn.label }}</button>
+</view>

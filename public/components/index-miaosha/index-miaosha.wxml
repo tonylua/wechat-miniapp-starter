@@ -1,0 +1,40 @@
+<wxs module="m1">
+module.exports.transToH5 = function(url) {
+  return "/pages/h5shell/h5shell?page_url=" 
+    + encodeURIComponent(url);
+};
+</wxs>
+
+<view class="index-miaosha-component"
+  wx:if="{{ data }}">
+  <view class="head">
+    <view class="title">
+      {{ locale.title }}
+      <Countdown class='countdown'
+        timeto="{{ data.current.begin_time }}"
+        bindFinish="onCountdownFinish">
+      </Countdown>
+    </view>
+    <navigator url="{{ m1.transToH5(data.more_url) }}">{{ locale.more }}</navigator>
+  </view>
+  <view class="body">
+    <navigator url="{{ m1.transToH5(data.current.url) }}">
+      <image src="{{ data.current.pic }}"></image>
+      <view class="info">
+        <view class="title">
+          {{ data.current.title }}
+        </view>
+        <view class="price">
+          <view class="now">
+            {{ data.current.currency }}
+            <text>{{ data.current.price }}</text>
+          </view>
+          <view class="old">
+            {{ data.current.currency }}
+            <text>{{ data.current.origin_price }}</text>
+          </view>
+        </view>
+      </view>
+    </navigator>
+  </view>
+</view>

@@ -1,0 +1,75 @@
+@import '/_global.less';
+
+@import 'weui.wxss';
+
+@font-face { //需要在index.js中import
+  font-family: 'Yetimology';
+  src: url('src/fonts/Yetimology.otf') format('opentype');
+  unicode-range: U+0030-0039;
+  font-weight: normal;
+  font-style: normal;
+}
+
+page {
+  font-family: "Hiragino Sans GB", "Microsoft YaHei", SimHei, sans-serif;
+  background-color: @backColor;
+}
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  font-family: HelveticaNeue-Light, Helvetica Neue Light, times;
+} 
+
+.Neue {
+  font-family: HelveticaNeue, Helvetica Neue, times;
+}
+
+/*list*/
+.weui-cell {
+  height: 110rpx;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: #fff;
+  
+  &,
+  &::after,
+  &::before {
+    border-color: @borderColor;
+  }
+}
+
+/*button*/
+.app-button {
+  margin: 40rpx 20rpx 0;
+}
+
+/*link*/
+navigator {
+  color: #576B94;
+}
+
+/*table by <view>*/
+.table {
+  border-collapse:collapse;
+	border-spacing:0;
+	width:100%;
+  display: table;
+
+  .thead {
+    display: table-header-group;
+  }
+  .tbody {
+    display: table-row-group;
+  }
+  .tr {
+    display: table-row;
+  }
+  .th,
+  .td {
+    display: table-cell;
+  }
+}

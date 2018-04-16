@@ -1,0 +1,28 @@
+/*由 src/less/components/countdown/countdown.less 生成，请勿手动修改以免被覆盖！*/
+.countdown-component {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-content: stretch;
+  height: 38rpx;
+  overflow: hidden;
+}
+.countdown-component > view {
+  background: #000000;
+  border-radius: 6rpx;
+  min-width: 34rpx;
+  padding: 0 7rpx;
+  line-height: 38rpx;
+  font-size: 20rpx;
+  color: #FFFFFF;
+  letter-spacing: 0.24rpx;
+  text-align: center;
+}
+.countdown-component > text {
+  display: inline-block;
+  width: 16rpx;
+  line-height: 38rpx;
+  font-size: 20rpx;
+  color: #000000;
+  letter-spacing: 0.12rpx;
+  text-align: center;
+}

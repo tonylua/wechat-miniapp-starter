@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/mine/mine",
+    "pages/h5shell/h5shell",
+    "pages/msg/msg"
+  ],
+  "tabBar": {
+    "color": "#7F7F7F",
+    "backgroundColor": "#FFF",
+    "selectedColor": "#FD593E",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tabbar-index-off.png",
+        "selectedIconPath": "images/tabbar-index.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/tabbar-mine-off.png",
+        "selectedIconPath": "images/tabbar-mine.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundColor": "#fafafa",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#EF8E6E",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "微生活",
+    "navigationStyle": "default"
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  }
+}

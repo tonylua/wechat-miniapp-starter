@@ -1,0 +1,36 @@
+{
+  "name": "weapp-super-portal",
+  "version": "0.0.1",
+  "description": "wechat-miniapp-starter",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./dev.js",
+    "reset": "node ./dev.js --reset"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.dev.acewill.net:welife/frontend.git"
+  },
+  "keywords": [
+    "微信小程序",
+    "less",
+    "nodejs",
+    "mock",
+    "开发启动包"
+  ],
+  "author": "tonylua@sina.com",
+  "license": "ISC",
+  "devDependencies": {
+    "base64-img": "^1.0.3",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "fs-extra": "^3.0.1",
+    "fs-watch-tree": "^0.2.5",
+    "klaw-sync": "^2.1.0",
+    "less": "^2.7.2",
+    "lodash": "^4.17.4",
+    "nodemon": "^1.11.0",
+    "postcss": "^6.0.5"
+  }
+}

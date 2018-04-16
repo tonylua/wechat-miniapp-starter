@@ -1,0 +1,11 @@
+<wxs module="m">
+</wxs>
+
+<view class="container" wx:if="{{ data !== null }}">
+  
+  Hello world!
+
+  <IndexMiaosha
+    data="{{ data.miaosha }}"></IndexMiaosha>
+
+</view>

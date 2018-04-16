@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "IndexMiaosha": "../../components/index-miaosha/index-miaosha"
+  }
+}

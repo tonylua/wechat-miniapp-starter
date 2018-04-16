@@ -1,0 +1,55 @@
+@import '/_global.less';
+
+page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+}
+
+.warn_img,
+.succ_ico {
+  margin-top: 270rpx;
+}
+
+.warn_img {
+  width: 231rpx;
+  height: 169rpx;
+  background: url('@{img}warn_img.svg') no-repeat 50% 50%;
+  background-size: contain;
+  text-align: center;
+  text-indent: -9999rpx;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform-origin: 50% 50%;
+  -webkit-animation: boat_animation 3s 0s ease-in infinite;
+}
+@-webkit-keyframes boat_animation {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    transform: translate3d(0, -5rpx, 0);
+  }
+  66% {
+    transform: translate3d(0, 3rpx, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+text {
+  margin: 10rpx 0;
+  font-size : 28rpx;
+  color : #B3B3B3;
+}
+
+.buttons {
+  align-self: stretch;
+  padding: 0 15rpx;
+
+  button {
+    display: block;
+  }
+}

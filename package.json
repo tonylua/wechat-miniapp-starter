@@ -30,6 +30,7 @@
     "klaw-sync": "^2.1.0",
     "less": "^2.7.2",
     "lodash": "^4.17.4",
+    "node-file-eval": "^1.0.0",
     "nodemon": "^1.11.0",
     "postcss": "^6.0.5"
   }

@@ -1,5 +1,6 @@
 const { assign } = require('./object');
 const { show_loading, hide_loading } = require('./api');
+const { mock_host, mock_port, mock_protocal } = require('../app.config');
 
 const _isValidCode = code=>{
 	let c = parseInt(code); 
@@ -13,8 +14,10 @@ const _request = function(method, url, data, success, onfail=null) {
     show_loading();
 
     _globalData.requesting = true;
+
+
     wx.request({
-      url: `http://localhost:7001${url}`,
+      url: `${mock_protocal}://${mock_host}:${mock_port}${url}`,
       data: assign(
         data, 
         {

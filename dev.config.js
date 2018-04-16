@@ -7,7 +7,7 @@ exports.getHost = function(process) {
 	if (!process)
 		return _host;
 
-	console.log("DEV.CONFIG.JS", process.env.npm_config_argv);
+	// console.log("DEV.CONFIG.JS", process.env.npm_config_argv);
 	
 	const { original } = JSON.parse(process.env.npm_config_argv);
 	let ip_param;
@@ -51,3 +51,4 @@ exports.getHost = function(process) {
 exports.mock_port = 7001;
 exports.mock_path = resolve(__dirname, 'api');
 exports.mock_prefix = '/superportal';
+exports.mock_protocal = 'http';

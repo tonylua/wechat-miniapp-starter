@@ -1,0 +1,5 @@
+{
+  "verbose": false,
+  "delay": "2000",
+  "ignore": ["*.config.js"]
+}

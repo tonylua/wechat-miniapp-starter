@@ -1,5 +1,7 @@
 # 小程序开发启动包
 
+*后端开发重点阅读 1、2 部分即可*
+
 > 支持 less 、nodejs-mock-api 、本地语言包 等的微信小程序开发启动包
 
 ## 1. 目录结构
@@ -17,9 +19,8 @@
 - 修改 /public/project.config.json 中的 projectname
 - 用“微信web开发者工具”添加项目，填入 AppID，并将以上代码中的`public`目录设置为项目目录
 - 进入项目后，将开发者工具“详情”选项中的“ES6转ES5”等所有选项都勾选
-- 将`/public/utils/request.js`中第17行左右的`url: http://localhost:7001`改为自己的配置
-- 在默认编辑器中，将`/dev.config.js`中的`mock_host`和`mock_port`改为和上面对应的配置
-- 遍历public下的wxss文件，如果存在诸如 `http://localhost:7001` 这样开头的图片地址，也应该批量替换成对应地址
+- 将`/public/app.config.js`中的协议、端口等改为自己的配置；! 如果是前端开发时，应修改`dev.config.js`，会自动生成覆盖前者的内容 !
+- 遍历public下的wxss文件，如果存在诸如 `http://localhost:7001` 这样开头(具体取决于 dev.config.js)的图片地址，也应该批量替换成对应地址
 - 在开发者工具的“调试”中，可以pc端调试
 - 在开发者工具的“项目”中，点击“预览”按钮后，会生成二维码，在手机端调试
 - 提交审核前注意在服务器配置中设置响应头"Access-Control-Allow-Origin"为"https://servicewechat.com"，其他设置请详细阅览官方文档
@@ -57,6 +58,7 @@ code //wx.login() 后获得的code
 ### 3.2 开发步骤
 
 - 运行 `npm start`，以启动api服务器并自动监听less等
+- 关于 `dev.config.js` 的配置可以阅读 2.1 中的部分
 - 首先参考已有结构，新建或修改 api 目录下的文件，将所做功能的后台数据结构完成
 - 返回数据中涉及的图标等素材图，存放到 assets 目录中
 - tabbar等处的图标等，需要打包发布的，放到 public/images/ 中

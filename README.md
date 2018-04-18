@@ -27,9 +27,15 @@
 
 ### 2.2 前后端接口
 
-所有 mock 数据放在 `/api/` 目录中，可以分为任意数量的 xxx.api.js 文件
+> 所有 mock 数据放在 `/api/` 目录中，可以分为任意数量的 xxx.api.js 文件
 
-> 所有 ajax 请求均须返回以下JSON格式（本文档用php格式说明，具体实现语言不限）
+所有 ajax 请求均以 `dev.config.js` 中的 mock_prefix 部分为前缀，以便区分；如：
+
+```
+GET /weappmini/index
+```
+
+所有 ajax 请求均须返回以下JSON格式（本文档用php格式说明，具体实现语言不限）:
 
     $response = array(
         "errcode"=> 0, //0为成功，其他整数为失败

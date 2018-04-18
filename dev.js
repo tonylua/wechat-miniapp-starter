@@ -3,14 +3,20 @@ const postcss = require('postcss');
 const less = require('less');
 const {watchTree} = require('fs-watch-tree');
 const fs = require('fs-extra');
+const nodeFileEval = require('node-file-eval');
 const walk = require('klaw-sync');
 const express = require('express');
-const http = require('http');
+const https = require('https');
 const bodyParser = require('body-parser');
 const { resolve, join, relative } = require('path');
 const config = require('./dev.config.js');
 
 const HOST_FROM_CFG = config.getHost(process);
+
+const HTTPS_OPTS = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
+};
 
 const css2wxss = (path, cont)=>{
 	path = relative(__dirname, path);
@@ -19,6 +25,7 @@ const css2wxss = (path, cont)=>{
 	fs.writeFileSync(wxss, `/*由 ${path} 生成，请勿手动修改以免被覆盖！*/\r\n${cont}`);
 	console.log(wxss, 'saved!');
 };
+
 const parseFont = css=>{
 	const re = /\'(.*\.(?:ttf|otf))\'/gi;
 	let exec, font, size, map={};
@@ -35,6 +42,7 @@ const parseFont = css=>{
 	}
 	return css;
 };
+
 const parseImg = css=>{
 	const re = /\'(.*\.(?:jpg|jpeg|gif|png|svg))\'/gi;
 	let exec, origin, img, size, map={};
@@ -50,13 +58,14 @@ const parseImg = css=>{
 			map[img] = map[img] || base64Img.base64Sync(img);
 			console.log('base64:', img, map[img].substring(0, 100) + '...');
 		} else {
-			map[img] = map[img] || origin.replace(/^assets/, `http://${HOST_FROM_CFG}:${config.mock_port}/assets`);
+			map[img] = map[img] || origin.replace(/^assets/, `${config.mock_protocal}://${HOST_FROM_CFG}:${config.mock_port}/assets`);
 			console.log('absolute path:', img);
 		}
 		css = css.replace(`('${origin}`, `('${map[img]}`);
 	}
 	return css;
 };
+
 const parseLess = path=>{
 	const lessCont = fs.readFileSync(path, 'utf8').replace(
     	/(\@import\s.*?\.wxss[\'|\"])(?:\s+)?\;/g, 
@@ -80,9 +89,27 @@ const parseAllLess = ()=>{
 		.then(()=>console.log('👌  所有less已处理完毕!'));
 };
 
+const parseDevConfig = ()=>{
+	const path = relative(__dirname, 'dev.config.js');
+	const dist = resolve(__dirname, 'public/app.config.js');
+
+	nodeFileEval('./dev.config.js').then(dcfg=>{
+		const cfg = {
+			mock_host: dcfg.getHost(process),
+			mock_port: dcfg.mock_port,
+			mock_prefix: dcfg.mock_prefix,
+			mock_protocal: dcfg.mock_protocal
+		};
+		const cont = 'module.exports = ' + JSON.stringify(cfg, null, 2);
+		fs.writeFileSync(dist, `/*由 ${path} 生成，请勿手动修改以免被覆盖！*/\r\n${cont}`);
+		console.log(dist, 'saved!');
+	});
+}
+
 //reset模式
 if (process.argv.length > 2 && process.argv[2] === '--reset') {
 	parseAllLess();
+	parseDevConfig();
 	return;
 }
 
@@ -102,7 +129,24 @@ watchTree("./src/less", {
     }
     parseLess(name);
 });
-console.log('watching...');
+console.log('watching less...');
+
+//监听环境配置文件等
+watchTree("./", {
+    exclude: [
+    	".git",
+    	"node_modules",
+    	"src"
+    ]
+}, event=> {
+	const { name } = event;
+    if (event.isDirectory() || !/\.js$/.test(name)) return;
+	if (/dev\.config\.js$/.test(name)) {
+    	parseDevConfig();
+    	return;
+    }
+});
+console.log('watching config...');
 
 
 //启动mock服务器
@@ -120,7 +164,7 @@ const runserver = (port, dir)=>{
 	    res.header("Content-Type", "application/json;charset=utf-8");  
 	    next();  
 	});
-	const server = http.createServer(app);
+	const server = https.createServer(HTTPS_OPTS, app);
 	const api = walk(config.mock_path)
 		.map(p=>p.path)
 		.filter(path=>/\.js$/.test(path))
@@ -128,6 +172,6 @@ const runserver = (port, dir)=>{
 	app.set('port', port);
 	let host = HOST_FROM_CFG;
     server.listen(port, host);
-    server.on('listening', e=>console.log(`server run at http://${host}:${port} (${dir})`));
+    server.on('listening', e=>console.log(`server run at ${config.mock_protocal}://${host}:${port} (${dir})`));
 }
 runserver(config.mock_port, './');

@@ -13,7 +13,7 @@ page {
 .warn_img {
   width: 231rpx;
   height: 169rpx;
-  background: url('http://localhost:7001/assets/warn_img.svg') no-repeat 50% 50%;
+  background: url('https://localhost:7001/assets/warn_img.svg') no-repeat 50% 50%;
   background-size: contain;
   text-align: center;
   text-indent: -9999rpx;

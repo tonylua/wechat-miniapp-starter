@@ -47,8 +47,7 @@ exports.getHost = function(process) {
 	return _host;
 };
 
-// exports.mock_host = 'localhost';
 exports.mock_port = 7001;
 exports.mock_path = resolve(__dirname, 'api');
 exports.mock_prefix = '/weappmini';
-exports.mock_protocal = 'http';
+exports.mock_protocal = 'https';

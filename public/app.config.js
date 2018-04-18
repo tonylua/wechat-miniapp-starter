@@ -2,6 +2,6 @@
 module.exports = {
   "mock_host": "localhost",
   "mock_port": 7001,
-  "mock_prefix": "/superportal",
-  "mock_protocal": "http"
+  "mock_prefix": "/weappmini",
+  "mock_protocal": "https"
 }

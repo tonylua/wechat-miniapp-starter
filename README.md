@@ -20,7 +20,7 @@
 - 用“微信web开发者工具”添加项目，填入 AppID，并将以上代码中的`public`目录设置为项目目录
 - 进入项目后，将开发者工具“详情”选项中的“ES6转ES5”等所有选项都勾选
 - 将`/public/app.config.js`中的协议、端口等改为自己的配置；! 如果是前端开发时，应修改`dev.config.js`，会自动生成覆盖前者的内容 !
-- 遍历public下的wxss文件，如果存在诸如 `http://localhost:7001` 这样开头(具体取决于 dev.config.js)的图片地址，也应该批量替换成对应地址
+- 遍历public下的wxss文件，如果存在诸如 `https://localhost:7001` 这样开头(具体取决于 dev.config.js)的图片地址，也应该批量替换成对应地址
 - 在开发者工具的“调试”中，可以pc端调试
 - 在开发者工具的“项目”中，点击“预览”按钮后，会生成二维码，在手机端调试
 - 提交审核前注意在服务器配置中设置响应头"Access-Control-Allow-Origin"为"https://servicewechat.com"，其他设置请详细阅览官方文档

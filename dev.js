@@ -20,10 +20,15 @@ const HTTPS_OPTS = {
 
 const css2wxss = (path, cont)=>{
 	path = relative(__dirname, path);
-	const wxss = path.replace(/^src\/less\//, 'public/').replace(/\.less$/, '.wxss');
-	cont = cont.replace(/\/\*wxss\={2}\s(.*?)\s\={2}wxss\*\//g, "$1;\r\n");
-	fs.writeFileSync(wxss, `/*由 ${path} 生成，请勿手动修改以免被覆盖！*/\r\n${cont}`);
-	console.log(wxss, 'saved!');
+	const wxss = relative(__dirname, 
+		path.replace(/^src\Wless\W/, 'public/').replace(/\.less$/, '.wxss')
+	);
+	if (fs.existsSync(wxss)) {
+		cont = cont.replace(/\W\*wxss\={2}\s(.*?)\s\={2}wxss\*\W/g, "$1;\r\n");
+		fs.unlinkSync(wxss);
+		fs.writeFileSync(wxss, `/*由 ${path} 生成，请勿手动修改以免被覆盖！*/\r\n${cont}`, {mode: 0o777});
+		console.log(wxss, 'saved!');
+	}
 };
 
 const parseFont = css=>{
@@ -84,7 +89,7 @@ const parseAllLess = ()=>{
 			nodir: true
 		}).map(p=>p.path)
 		.filter(path=>/\.less$/.test(path))
-		.filter(path=>/\/less\/(?!\_)/.test(path));
+		.filter(path=>/\Wless\W(?!\_)/.test(path));
 	return Promise.all(lessFiles.map(parseLess))
 		.then(()=>console.log('👌  所有less已处理完毕!'));
 };

@@ -1,3 +1,4 @@
+const {assign} = require('utils/object');
 const reqs= require('./app_requests');
 const locale = require('./locale');
 const {word} = require('utils/locale');
@@ -11,13 +12,8 @@ App({
     wx.login({
       success(res) {
         if (res.code) {
-          _app.globalData['wx_code'] = res.code;
-          
-          reqs.init(
-            _app,
-            launchParams
-          );
-
+          const paramsWithCode = assign({}, res, launchParams);
+          reqs.init(_app, paramsWithCode);
         } else {
           _app.alert(res.errMsg);
         }

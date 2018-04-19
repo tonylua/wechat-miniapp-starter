@@ -15,15 +15,13 @@ const _request = function(method, url, data, success, onfail=null) {
 
     _globalData.requesting = true;
 
-
     wx.request({
       url: `${mock_protocal}://${mock_host}:${mock_port}${url}`,
       data: assign(
         data, 
         {
           _from_weapp: 1,
-          code: _globalData['wx_code']
-          // openid: wx.getStorageSync('openid')
+          login_state: wx.getStorageSync('login_state')
         }
       ),
       method,

@@ -49,7 +49,7 @@ GET /weappmini/index
 
 ```
 _from_weapp //总是为1，表示来自于小程序的请求
-code //wx.login() 后获得的code
+login_state //app.api.js 中初始化请求中根据 code 返回的自定义登录态
 ```
 
 ### 2.3 运行 nodejs api

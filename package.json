@@ -1,6 +1,6 @@
 {
   "name": "wechat-miniapp-starter-proj",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "wechat-miniapp-starter",
   "main": "app.js",
   "scripts": {

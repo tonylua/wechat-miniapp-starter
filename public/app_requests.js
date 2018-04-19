@@ -3,10 +3,13 @@ const { request, configUtil } = require('utils/request');
 const { mock_prefix } = require('./app.config');
 
 //应用初始化
-const initApp = (app, launchParams) => request(
+const initApp = (app, paramsWithCode) => request(
   'GET', `${mock_prefix}/`,
-  launchParams,
-  result => assign(app.globalData, result)
+  paramsWithCode,
+  result => {
+    assign(app.globalData, result); //扩充登录态等
+    wx.setStorageSync('login_state', result.login_state);
+  }
 );
 
 //业务请求：登录
@@ -19,9 +22,9 @@ const logout = () => request('POST', `${mock_prefix}/logout`, {});
 const getIndex = callback => request('GET', `${mock_prefix}/index`, {}, callback);
 
 module.exports = {
-  init(app, launchParams) {
+  init(app, paramsWithCode) {
     configUtil(app);
-    initApp(app, launchParams);
+    initApp(app, paramsWithCode);
     return this;
   },
   login,

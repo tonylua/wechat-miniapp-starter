@@ -9,7 +9,7 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "1.9.94",
-	"appid": "wxe93c0c49184e106d",
+	"appid": "touristappid",
 	"projectname": "wechat-miniapp-starter",
 	"isGameTourist": false,
 	"condition": {

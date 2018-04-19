@@ -52,6 +52,15 @@ _from_weapp //总是为1，表示来自于小程序的请求
 code //wx.login() 后获得的code
 ```
 
+### 2.3 运行 nodejs api
+
+如果后端开发需要运行一下api查看效果，可按以下步骤：
+
+- 安装 nodejs
+- 在项目根目录 `npm i`
+- `npm run reset`
+- `npm start`
+- 打开开发者工具查看
 ## 3. 前端开发
 
 ### 3.1 开发概述

@@ -3,7 +3,6 @@ import {
 } from '../../app_requests';
 import { assign } from '../../utils/object';
 import { word } from '../../utils/locale';
-import * as BusinessCons from "../../components/index-head/Constants";
 
 const app = getApp();
 const { locale } = app.globalData;
@@ -22,7 +21,7 @@ Page({
         })
       });
 
-      _me.checkPaihao(rst);
+      //do sth. else ...
     });
 
     //方法：退出小程序

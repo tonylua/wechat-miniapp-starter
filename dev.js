@@ -6,17 +6,12 @@ const fs = require('fs-extra');
 const nodeFileEval = require('node-file-eval');
 const walk = require('klaw-sync');
 const express = require('express');
-const https = require('https');
+const http = require('http');
 const bodyParser = require('body-parser');
 const { resolve, join, relative } = require('path');
 const config = require('./dev.config.js');
 
 const HOST_FROM_CFG = config.getHost(process);
-
-const HTTPS_OPTS = {
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem')
-};
 
 const css2wxss = (path, cont)=>{
 	path = relative(__dirname, path);
@@ -169,7 +164,7 @@ const runserver = (port, dir)=>{
 	    res.header("Content-Type", "application/json;charset=utf-8");  
 	    next();  
 	});
-	const server = https.createServer(HTTPS_OPTS, app);
+	const server = http.createServer(app);
 	const api = walk(config.mock_path)
 		.map(p=>p.path)
 		.filter(path=>/\.js$/.test(path))

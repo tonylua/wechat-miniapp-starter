@@ -50,4 +50,4 @@ exports.getHost = function(process) {
 exports.mock_port = 7001;
 exports.mock_path = resolve(__dirname, 'api');
 exports.mock_prefix = '/weappmini';
-exports.mock_protocal = 'https';
+exports.mock_protocal = 'http';

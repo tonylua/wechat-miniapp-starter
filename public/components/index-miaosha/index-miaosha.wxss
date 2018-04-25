@@ -1,4 +1,4 @@
-/*由 src\less\components\index-miaosha\index-miaosha.less 生成，请勿手动修改以免被覆盖！*/
+/*由 src/less/components/index-miaosha/index-miaosha.less 生成，请勿手动修改以免被覆盖！*/
 .index-pintuan-component,
 .index-miaosha-component {
   margin: 0 40rpx 90rpx;

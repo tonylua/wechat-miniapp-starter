@@ -7,6 +7,12 @@ module.exports = {
   , alert: {
     button_text: '我知道了'
   }
+  /*用户授权*/
+  , userInfoModal: {
+    title: "授权提示",
+    content: "要先允许使用[用户信息]才可以登录哦",
+    fail: "授权失败"
+  }
   /*登录*/
   , login: {
   }

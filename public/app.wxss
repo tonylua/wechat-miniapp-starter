@@ -1,4 +1,4 @@
-/*由 src\less\app.less 生成，请勿手动修改以免被覆盖！*/
+/*由 src/less/app.less 生成，请勿手动修改以免被覆盖！*/
 @import 'weui.wxss';
 
 @font-face {

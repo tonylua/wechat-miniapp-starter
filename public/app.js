@@ -1,21 +1,92 @@
-const {assign} = require('utils/object');
-const reqs= require('./app_requests');
+const { assign, omit } = require('utils/object');
+const {init}= require('./app_requests');
 const locale = require('./locale');
 const {word} = require('utils/locale');
 
+let _app = null;
+let paramsWithCode = null;
+
+//方法：退出小程序
+const exitApp = () => wx.navigateBack({});
+
+//回调：取得了login::code以后
+const _codeCbk = loginRes=>{
+  //申请授权并取得用户信息
+  wx.getUserInfo({
+    success(userinfoRes) {
+      _userinfoCbk(userinfoRes);
+    },
+    fail(obj) {
+      wx.showModal({
+        title: locale.userInfoModal.title,
+        content: locale.userInfoModal.content,
+        success(modalRes) {
+
+          if (modalRes.confirm) {
+
+            wx.openSetting({ //打开小程序设置页面
+              success(modalRes) {
+                if (modalRes.authSetting["scope.userInfo"]) {
+                  wx.getSetting({
+                    success(gsRes) {
+                      _userinfoCbk(gsRes.authSetting["scope.userInfo"]);
+                    },
+                    fail() {
+                      _app.alert(locale.userInfoModal.fail);
+                      exitApp();
+                    }
+                  });
+                } else {
+                  exitApp();
+                }
+              },
+              fail() {
+                exitApp();
+              }
+            });
+
+          } else {
+            exitApp();
+          }
+
+        }
+      }) // end of wx.showModal
+    }
+  }); //end of wx.getUserInfo
+};
+
+//回调：取得了userinfo以后
+const _userinfoCbk = userinfoRes => {
+  //获取第三方平台自定义的数据字段
+  wx.getExtConfig({
+    success(extCfgRes) {
+      paramsWithCode = assign({}, paramsWithCode, userinfoRes, extCfgRes.extConfig);
+      paramsWithCode = omit(paramsWithCode, 'errMsg', 'rawData');
+
+      console.log('app.js init', paramsWithCode);
+      
+      //初始化的ajax请求
+      init(_app, paramsWithCode);
+    },
+    fail() {
+      _app.alert(loginRes.errMsg);
+    }
+  });
+};
+
 //app.js
 App({
-  onLaunch(launchParams) {
+  onShow(launchParams) {
 
-    let _app = this;
+    _app = this;
     
     wx.login({
-      success(res) {
-        if (res.code) {
-          const paramsWithCode = assign({}, res, launchParams);
-          reqs.init(_app, paramsWithCode);
+      success(loginRes) {
+        if (loginRes.code) {
+          paramsWithCode = assign({}, loginRes, launchParams);
+          _codeCbk(loginRes);
         } else {
-          _app.alert(res.errMsg);
+          _app.alert(loginRes.errMsg);
         }
       },
     })

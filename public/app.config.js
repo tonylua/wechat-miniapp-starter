@@ -3,5 +3,5 @@ module.exports = {
   "mock_host": "localhost",
   "mock_port": 7001,
   "mock_prefix": "/weappmini",
-  "mock_protocal": "https"
+  "mock_protocal": "http"
 }

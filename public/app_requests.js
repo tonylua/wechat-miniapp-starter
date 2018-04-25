@@ -24,6 +24,7 @@ const getIndex = callback => request('GET', `${mock_prefix}/index`, {}, callback
 module.exports = {
   init(app, paramsWithCode) {
     configUtil(app);
+    assign(app.globalData, paramsWithCode);
     initApp(app, paramsWithCode);
     return this;
   },

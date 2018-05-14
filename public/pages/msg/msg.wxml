@@ -1,7 +1,11 @@
-<view wx:if="{{ code!=0 }}" class="warn_img">{{ code }}</view>
-<icon wx:else type="success" size="80" class="succ_ico" />
+<view wx:if="{{ code!=0 || icon }}" 
+    class="warn_img"
+    style="background-image: url({{ icon }}); -webkit-animation:none;" >{{ code }}</view>
 
-<text>{{ message }}</text>
+<icon wx:else type="success" size="80" 
+    class="succ_ico" />
+
+<text>{{ message || "unknown error(-1)" }}</text>
 
 <view class="buttons">
   <button 
@@ -10,5 +14,8 @@
     wx:key="label"
     type="{{ btn.type }}" 
     data-route="{{ btn.route }}"
-    catchtap="onButtonClick">{{ btn.label }}</button>
+    catchtap="onButtonClick"
+    >
+    {{ btn.label }}
+    </button>
 </view>

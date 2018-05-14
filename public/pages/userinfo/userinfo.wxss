@@ -1,4 +1,4 @@
-/*由 src/less/pages/msg/msg.less 生成，请勿手动修改以免被覆盖！*/
+/*由 src/less/pages/userinfo/userinfo.less 生成，请勿手动修改以免被覆盖！*/
 page {
   display: flex;
   flex-direction: column;
@@ -50,4 +50,8 @@ text {
   display: block;
   border-radius: 100rem;
   background: -webkit-gradient(linear, 0 0, right 0, from(#fd4b3b), to(#fd6d42));
+}
+.warn_img {
+  background-image: url('http://localhost:7001/assets/icon_authorization.svg');
+  -webkit-animation: none;
 }

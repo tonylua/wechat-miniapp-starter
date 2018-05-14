@@ -7,11 +7,19 @@ const nodeFileEval = require('node-file-eval');
 const walk = require('klaw-sync');
 const express = require('express');
 const http = require('http');
+const https = require('https');
+const constants = require('constants');
 const bodyParser = require('body-parser');
 const { resolve, join, relative } = require('path');
 const config = require('./dev.config.js');
 
 const HOST_FROM_CFG = config.getHost(process);
+
+const HTTPS_OPTS = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  secureOptions: constants.SSL_OP_NO_TLSv1_2 | constants.SSL_OP_NO_TLSv1_1
+};
 
 const css2wxss = (path, cont)=>{
 	path = relative(__dirname, path);
@@ -23,6 +31,8 @@ const css2wxss = (path, cont)=>{
 		fs.unlinkSync(wxss);
 		fs.writeFileSync(wxss, `/*由 ${path} 生成，请勿手动修改以免被覆盖！*/\r\n${cont}`, {mode: 0o777});
 		console.log(wxss, 'saved!');
+	}else {
+		console.log(wxss+"不存在")
 	}
 };
 
@@ -164,7 +174,9 @@ const runserver = (port, dir)=>{
 	    res.header("Content-Type", "application/json;charset=utf-8");  
 	    next();  
 	});
-	const server = http.createServer(app);
+	const server = config.mock_protocal === 'http'
+		? http.createServer(app)
+		: https.createServer(HTTPS_OPTS, app);
 	const api = walk(config.mock_path)
 		.map(p=>p.path)
 		.filter(path=>/\.js$/.test(path))

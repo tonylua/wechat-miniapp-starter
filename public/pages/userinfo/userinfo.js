@@ -1,17 +1,29 @@
+const { omit } = require('../../utils/object');
+// const { init }= require('../../app_requests');
+
+const app = getApp();
+
 Page({
     data: {
     },
     onLoad(opts) {
-        const { code, message, buttons, icon } = opts;
+        const { code, message, buttons } = opts;
         this.setData({
             message,
             code,
-            icon: icon ? decodeURIComponent(icon) : 'initial',
             buttons: buttons ? JSON.parse(decodeURIComponent(buttons)) : []
         });
     },
+    onUserInfo(res) {
+      const {errMsg} = res.detail;
+      const isFail = errMsg !== 'getUserInfo:ok';
+      if (isFail) return;
+      app.onUserinfoGot(res.detail);
+    },
     onButtonClick(e) {
-      const { route } = e.currentTarget.dataset;
+      const { route, opentype } = e.currentTarget.dataset;
+      
+      if ("getUserInfo" === opentype) return;
 
       wx.redirectTo({
         url: route,

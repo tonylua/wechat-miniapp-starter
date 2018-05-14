@@ -3,6 +3,7 @@
     "pages/index/index",
     "pages/mine/mine",
     "pages/h5shell/h5shell",
+    "pages/userinfo/userinfo",
     "pages/msg/msg"
   ],
   "tabBar": {

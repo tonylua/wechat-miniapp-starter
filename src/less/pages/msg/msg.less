@@ -14,8 +14,8 @@ page {
 }
 
 .warn_img {
-  width: 231rpx;
-  height: 169rpx;
+  width: 234rpx;
+  height: 182rpx;
   background: url('@{img}warn_img.svg') no-repeat 50% 50%;
   background-size: contain;
   text-align: center;
@@ -26,30 +26,34 @@ page {
 }
 @-webkit-keyframes boat_animation {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) rotate(-1deg);
   }
   33% {
     transform: translate3d(0, -5rpx, 0);
   }
   66% {
-    transform: translate3d(0, 3rpx, 0);
+    transform: translate3d(0, 3rpx, 0) rotate(1deg);
   }
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) rotate(-1deg);
   }
 }
 
 text {
-  margin: 10rpx 0;
-  font-size : 28rpx;
-  color : #B3B3B3;
+  margin: 10rpx 150rpx 150rpx;
+  font-size : 30rpx;
+  color : #999;
 }
 
 .buttons {
   align-self: stretch;
-  padding: 0 15rpx;
+  padding: 0 40rpx;
 
-  button {
+  button,
+  button:active,
+  button:hover {
     display: block;
+    border-radius: 100rem;
+    background: -webkit-gradient(linear, 0 0, right 0, from( rgba(253, 75, 59, 1) ), to( rgba(253, 109, 66, 1) ));
   }
 }

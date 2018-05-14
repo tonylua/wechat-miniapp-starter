@@ -1,9 +1,5 @@
 const ObjectUtil = {
     assign(target) {
-        if (target == null) {
-          throw new TypeError('Cannot convert undefined or null to object');
-        }
-
         target = Object(target);
         for (var index = 1; index < arguments.length; index++) {
           var source = arguments[index];
@@ -18,12 +14,23 @@ const ObjectUtil = {
         return target;
     },
     omit(target, ...properties) {
-      if (target == null) {
-        throw new TypeError('Cannot parse undefined or null to object');
+      if (!target) {
+        return null;
       }
-
       let rst = ObjectUtil.assign({}, target);
       Object.keys(target).filter(k=>~properties.indexOf(k)).forEach(k=>delete rst[k]);
+      return rst;
+    },
+    pick(target, ...properties) {
+      if (!target || typeof target !== 'object') {
+        return null;
+      }
+      let rst = {};
+      properties.forEach(p=>{
+        if (p && target[p]) {
+          rst[p] = target[p];
+        }
+      });
       return rst;
     }
 };

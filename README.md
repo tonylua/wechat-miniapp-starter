@@ -19,7 +19,8 @@
 - 修改 /public/project.config.json 中的 projectname
 - 用“微信web开发者工具”添加项目，填入 AppID，并将以上代码中的`public`目录设置为项目目录
 - 进入项目后，将开发者工具“详情”选项中的“ES6转ES5”等所有选项都勾选
-- 将`/public/app.config.js`中的协议、端口等改为自己的配置；! 如果是前端开发时，应修改`dev.config.js`，会自动生成覆盖前者的内容 !
+- 将`/public/app.config.js`中的协议、端口等改为自己的配置；! 注意：如果是前端开发时，修改`dev.config.js`，会自动生成覆盖前者的内容 !
+- 前端尽量不要修改`dev.config.js`，特殊情况下改完后应恢复原状提交；需要指定 IP 等可用 2.4 中的做法
 - 遍历public下的wxss文件，如果存在诸如 `https://localhost:7001` 这样开头(具体取决于 dev.config.js)的图片地址，也应该批量替换成对应地址
 - 在开发者工具的“调试”中，可以pc端调试
 - 在开发者工具的“项目”中，点击“预览”按钮后，会生成二维码，在手机端调试
@@ -39,8 +40,9 @@ GET /weappmini/index
 
     $response = array(
         "errcode"=> 0, //0为成功，其他整数为失败
+        "errlevel"=> 'default', //若为 "alert"， 则弹出提示
         "errmsg"=> "hello world", //成功或失败的提示
-        "result"=> ... //业务逻辑的返回值部分
+        "result"=> array(...) //业务逻辑的返回值部分
     );
     $app->response()->header('Content-Type', 'application/json');
     echo json_encode($response);
@@ -48,19 +50,67 @@ GET /weappmini/index
 其中每次请求，均会携带以下信息：
 
 ```
-_from_weapp //总是为1，表示来自于小程序的请求
-login_state //app.api.js 中初始化请求中根据 code 返回的自定义登录态
+'_from_weapp' //总是为1，表示来自于小程序的请求
+'login_state' //初始化请求中根据 wx.login 和 wx.getExtConfig 返回的自定义登录态
+'encryptedData',
+'rawData',
+'iv',
+'path',
+'query',
+'scene',
+'signature',
+'userInfo',
+'code',
+'extConfig'
 ```
 
-### 2.3 运行 nodejs api
+### 2.3 常见 nodejs api
 
-如果后端开发需要运行一下api查看效果，可按以下步骤：
+必备环境：
 
 - 安装 nodejs
 - 在项目根目录 `npm i`
-- `npm run reset` (真机查看可加 -ip=1 设置成本机局域网ip)
-- `npm start`
-- 打开开发者工具查看
+
+场景1：前端在本机开发（localhost）
+
+```
+#拉取代码后重新编译less等，保证变量正确
+npm run reset
+
+#启动服务
+npm start
+
+#打开微信开发者工具...
+```
+
+场景2：真机调试或预览（用电脑自身的IP）
+
+```
+#将变量等替换成ip地址的格式
+npm run reset -ip=1
+
+#启动服务
+npm start -ip=1
+
+#打开微信开发者工具...
+```
+
+场景3：真机调试或预览（指定IP或域名）
+
+```
+#将变量等替换成指定的格式
+npm run reset -ip=<YOUR_HOST>
+
+#启动服务
+npm start -ip=<YOUR_HOST>
+
+#打开微信开发者工具...
+```
+
+### 2.4 登录验证流程
+
+![](login_logic.jpg)
+
 ## 3. 前端开发
 
 ### 3.1 开发概述
@@ -68,16 +118,19 @@ login_state //app.api.js 中初始化请求中根据 code 返回的自定义登�
 - `/src/` 目录中只存放字体文件和less样式源码
 - 字体文件会被自动编译为base64供wxss引用，一般不会添加
 - less源码会被自动编译为对应的wxss文件，所以后者不能手动修改
-- `/assets/`中的纯展示图片(实际运行中会被替换为实际图片的)，应以下划线开头；并且在 git add 时强制添加，比如命令行下就是加`-f`参数（或在 .gitignore 中声明）
+- `/assets/`中的纯展示图片(实际运行中会被替换为实际图片的)，应以下划线开头；并且在 git add 时强制添加，比如命令行下就是加`-f`参数
+- `/assets/`中的素材图片，如图标、背景图等，一般由设计师协助提供SVG格式
 
 ### 3.2 开发步骤
 
 - 运行 `npm start`，以启动api服务器并自动监听less等
-- 关于 `dev.config.js` 的配置可以阅读 2.1 中的部分
+- 改变配置等之后，可能需要运行 `npm run reset` 重置一下
+- 关于 `dev.config.js` 的配置可以阅读 2.2 中的部分
 - 首先参考已有结构，新建或修改 api 目录下的文件，将所做功能的后台数据结构完成
 - 返回数据中涉及的图标等素材图，存放到 assets 目录中
 - tabbar等处的图标等，需要打包发布的，放到 public/images/ 中
-- 在 public/app_requests.js 中，写好相应的请求方法以供页面 js 调用；不建议在页面 js 中直接写 `wx.request()`
+- 在 public/app_requests.js 中，写好相应的请求方法以供页面 js 调用；! 不在页面 js 中直接写 `wx.request()` !
+- 根据新的登录逻辑，上述文件中的请求方法应调用 _chkSessionAndRequest()
 - 需要新建页面的，在开发者工具中修改 app.json 中的 pages 节点，开发者工具会自动生成对应文件
 - 需要提取为可复用组件的部分，在 public/components 目录下建立相应自定义组件
 - 在 src/less 目录下，建立和 public 中完全对应目录的 less 文件
@@ -87,8 +140,8 @@ login_state //app.api.js 中初始化请求中根据 code 返回的自定义登�
 
 ### 3.3 本地语言包
 
-- 页面中如果需要写入中文等，应先归纳到语言包文件 public/locale.js 中以供页面调用； 
-- 不建议在页面的 js 和 wxml 中直接写入
+页面中如果需要写入中文等，应先归纳到语言包文件 public/locale.js 中以供页面调用； 
+不能在页面的 js 和 wxml 中直接写入
 
     ```javascript
     //locale.js
@@ -104,14 +157,32 @@ login_state //app.api.js 中初始化请求中根据 code 返回的自定义登�
 
     ```javascript
     //页面js或组件js中
-    const { word } = require('utils/locale');
     const locale = getApp().globalData.locale.miaosha;
     ```
 
     ```xml
     <text>{{ locale.label_table }}</text>
-    <text>{{ word(locale.product_count, 99, 2018) }}</text>
     ``` 
+
+### 3.4 报错和提示
+
+- 默认的错误提示方式按 2.3 章节中的 'errcode'、'errlevel'、'errmsg' 逻辑
+- 默认情况且 errlevel 为 'default' 的，可以在 result 中放入 `weapp_buttons`，其结构为 {label, type, route}
+- 默认情况且 errlevel 为 'default' 的，可以在 result 中放入 `weapp_iconUrl`，实现图标自定义
+- 默认情况且 errlevel 为 'alert' 的，可以在 result 中放入 routeAfterAlert，跳到指定的页面(可包含 ?foo=foo&bar=bar 部分)
+- 各页面局部的、具体的业务错误，应该用 app_requests.js -> chkSessionAndRequest() 的第五个参数（错误处理回调）来自定义
+
+app 实例里有两个方法可以调用：
+
+```
+//alert
+app.alert(msg, okCallback);
+```
+
+```
+//转入msg页面
+app.showMessagePage(errcode, errmsg, [{label, type, route}], iconUrl);
+```
 
 ## 4 涉及技术
 

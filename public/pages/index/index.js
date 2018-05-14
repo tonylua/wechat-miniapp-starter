@@ -2,16 +2,14 @@ import {
   getIndex
 } from '../../app_requests';
 import { assign } from '../../utils/object';
-import { word } from '../../utils/locale';
 
 const app = getApp();
-const { locale } = app.globalData;
 
 Page({
   data: {
     data: null
   },
-  onLoad(opts) {
+  _init() {
     let _me = this;
 
     getIndex(rst => {
@@ -24,6 +22,19 @@ Page({
       //do sth. else ...
     });
 
-  } //end of onLoad()
+  }, //end of _init()
+
+  _ready: false,
+
+  onShow() {
+    if (!this._ready) return;
+    this._init();
+    console.log("INDEX INIT@ONSHOW", app.initializing, app.globalData);
+  },
+  onReady() {
+    this._init();
+    this._ready = true;
+    console.log("INDEX INIT@ONREADY", app.initializing, app.globalData);
+  }
 
 })

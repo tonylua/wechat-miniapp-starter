@@ -12,7 +12,7 @@ exports.getHost = function(process) {
 	const { original } = JSON.parse(process.env.npm_config_argv);
 	let ip_param;
 	
-	if (original[0] === 'run' && /^(start|preview|mock)$/.test(original[1])) {
+	if (original[0] === 'run' && /^(start|reset)$/.test(original[1])) {
 		ip_param = original[2];
 	} else if (original[0] === 'start') {
 		ip_param = original[1];

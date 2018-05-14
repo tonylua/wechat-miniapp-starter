@@ -11,7 +11,8 @@ module.exports = {
   , userInfoModal: {
     title: "授权提示",
     content: "要先允许使用[用户信息]才可以登录哦",
-    fail: "授权失败"
+    fail: "授权失败",
+    extFail: "第三方平台自定义信息失败"
   }
   /*登录*/
   , login: {

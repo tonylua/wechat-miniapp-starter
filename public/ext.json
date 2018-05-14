@@ -1,0 +1,9 @@
+{
+  "extEnable": true,
+  "extAppid": "",
+  "directCommit": false,
+  "ext": {
+    "appid": "",
+    "foo": "bar"
+  }
+}

@@ -16,7 +16,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    locale: getApp().globalData.locale.miaosha,
+    locale: getApp().locale.miaosha,
     word
   },
 

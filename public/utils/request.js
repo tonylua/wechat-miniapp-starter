@@ -1,4 +1,4 @@
-const { assign } = require('./object');
+const { assign, pick } = require('./object');
 const { show_loading, hide_loading } = require('./api');
 const { mock_host, mock_port, mock_protocal } = require('../app.config');
 
@@ -13,42 +13,36 @@ const _request = function(method, url, data, success, onfail=null) {
     //console.log(_globalData)
     show_loading();
 
-    _globalData.requesting = true;
+    getApp().requesting = true;
+
+    const reqData = assign(
+      {_from_weapp: 1}, 
+      pick(
+        getApp().globalData,
+        'encryptedData',
+        'rawData',
+        'iv',
+        'path',
+        'query',
+        'scene',
+        'signature',
+        'userInfo',
+        'code',
+        'extConfig',
+        'login_state'
+      ), 
+      data
+    );
 
     wx.request({
       url: `${mock_protocal}://${mock_host}:${mock_port}${url}`,
-      data: assign(
-        data, 
-        {
-          _from_weapp: 1,
-          login_state: wx.getStorageSync('login_state')
-        }
-      ),
-      method,
+      data: reqData,
+      method: method.toUpperCase(),
       header: {},
       success(res){
-        // if (res.statusCode == 401) {
-        //   setTimeout(function() {
-        //     if (wx.reLaunch)
-        //       wx.reLaunch({
-        //         url: '/pages/login/login',
-        //         onfail(ex) {
-        //           console.error(ex);
-        //         }
-        //       });
-        //     else
-        //       wx.redirectTo({
-        //         url: '/pages/login/login',
-        //         onfail(ex) {
-        //           console.error(ex);
-        //         }
-        //       })
-        //   }, 500);
-        //   return;
-        // }
 
         const logicResponse = res.data;
-        const {errcode, errmsg, result} = logicResponse;
+        const {errcode, errlevel, errmsg, result} = logicResponse;
         //自动更新标题
         try {
           const {weapp_pagetitle} = result;
@@ -65,11 +59,19 @@ const _request = function(method, url, data, success, onfail=null) {
         if (!_isValidCode(errcode)) {
           if (onfail !== null) { //自定义
             onfail(logicResponse);
+          } else if (errlevel && errlevel === 'alert') {
+            getApp().alert(errmsg, ()=>{
+              if (result.hasOwnProperty('routeAfterAlert')) {
+                wx.navigateTo({url: result.routeAfterAlert});
+              }
+            });
           } else { //默认
             let url = `/pages/msg/msg?code=${ errcode }&message=${ errmsg }`;
-
             if (result && 'weapp_buttons' in result) {
-                url += `&buttons=${ encodeURIComponent(JSON.stringify(result.weapp_buttons)) }`;
+              url += `&buttons=${ encodeURIComponent(JSON.stringify(result.weapp_buttons)) }`;
+            }
+            if (result && 'weapp_iconUrl' in result) {
+              url += `&icon=${ encodeURIComponent(result.weapp_iconUrl) }`;
             }
             wx.navigateTo({url});
           }
@@ -84,7 +86,7 @@ const _request = function(method, url, data, success, onfail=null) {
         console.log(res);
       },
       complete(res) {
-        _globalData.requesting = false;
+        getApp().requesting = false;
         
         hide_loading();
       }

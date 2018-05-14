@@ -1,123 +1,88 @@
-const { assign, omit } = require('utils/object');
-const {init}= require('./app_requests');
+const { assign } = require('utils/object');
+const appSession = require('./app_session');
 const locale = require('./locale');
-const {word} = require('utils/locale');
 
 let _app = null;
-let paramsWithCode = null;
-
-//方法：退出小程序
-const exitApp = () => wx.navigateBack({});
-
-//回调：取得了login::code以后
-const _codeCbk = loginRes=>{
-  //申请授权并取得用户信息
-  wx.getUserInfo({
-    success(userinfoRes) {
-      _userinfoCbk(userinfoRes);
-    },
-    fail(obj) {
-      wx.showModal({
-        title: locale.userInfoModal.title,
-        content: locale.userInfoModal.content,
-        success(modalRes) {
-
-          if (modalRes.confirm) {
-
-            wx.openSetting({ //打开小程序设置页面
-              success(modalRes) {
-                if (modalRes.authSetting["scope.userInfo"]) {
-                  wx.getSetting({
-                    success(gsRes) {
-                      _userinfoCbk(gsRes.authSetting["scope.userInfo"]);
-                    },
-                    fail() {
-                      _app.alert(locale.userInfoModal.fail);
-                      exitApp();
-                    }
-                  });
-                } else {
-                  exitApp();
-                }
-              },
-              fail() {
-                exitApp();
-              }
-            });
-
-          } else {
-            exitApp();
-          }
-
-        }
-      }) // end of wx.showModal
-    }
-  }); //end of wx.getUserInfo
-};
-
-//回调：取得了userinfo以后
-const _userinfoCbk = userinfoRes => {
-  //获取第三方平台自定义的数据字段
-  wx.getExtConfig({
-    success(extCfgRes) {
-      paramsWithCode = assign({}, paramsWithCode, userinfoRes, extCfgRes.extConfig);
-      paramsWithCode = omit(paramsWithCode, 'errMsg', 'rawData');
-
-      console.log('app.js init', paramsWithCode);
-      
-      //初始化的ajax请求
-      init(_app, paramsWithCode);
-    },
-    fail() {
-      _app.alert(loginRes.errMsg);
-    }
-  });
-};
 
 //app.js
 App({
-  onShow(launchParams) {
-
-    _app = this;
-    
-    wx.login({
-      success(loginRes) {
-        if (loginRes.code) {
-          paramsWithCode = assign({}, loginRes, launchParams);
-          _codeCbk(loginRes);
-        } else {
-          _app.alert(loginRes.errMsg);
-        }
-      },
-    })
-
-  },
   
-  globalData: {
-    requesting: false,
-    locale
+  locale,
+  requesting: false,
+  globalData: {},
+  
+  onLaunch(launchParams) {
+    console.log('app.js onLaunch', launchParams)
+    _app = this;
+    wx.setStorageSync('launch_params', launchParams);
+    appSession.checkAfterAppLaunch(_app, launchParams);
   },
 
-  locale_str(key, ...args) {
-    let keys = key.split(',');
-    let lobj = locale;
-    while (keys.length) {
-      let k = keys.shift();
-      if (k in lobj)
-        lobj = lobj[k];
-      else
-        return "";
+  onShow(launchParams) {
+    console.log('app onShow', launchParams, getCurrentPages().map(p=>p.route));
+
+    wx.setStorageSync('launch_params', launchParams);
+
+    if (_app && _app.globalData) {
+      assign(_app.globalData, launchParams);
     }
-    if (typeof lobj !== 'string')
-      return "";
-    return word.apply(null, [lobj].concat(args));
+    
+    if (getCurrentPages().length > 1) {
+      wx.reLaunch({
+        url: '/pages/index/index',
+        complete() {
+          console.log('reLaunch in app_onShow ok');
+        }
+      });
+    }
   },
 
-  alert(msg) {
+  alert(msg, callback=null) {
     wx.showModal({
       title: '',
       content: String(msg),
-      showCancel: false
+      showCancel: false,
+      success(res) {
+        if (res.confirm && callback) {
+          callback();
+        }
+      }
     })
+  },
+
+  showMessagePage(errcode=0, errmsg='', buttons=[], iconUrl=null) {
+    const c = parseInt(errcode);
+    if (isNaN(c)) throw new Error('wrong errcode', errcode);
+
+    const m = encodeURIComponent(errmsg);
+
+    if (buttons 
+      && (typeof buttons === 'object') 
+      && !Array.isArray(buttons) ) {
+      buttons = [buttons];
+    }
+
+    if (buttons && buttons.length && !buttons[0].hasOwnProperty('label'))
+      throw new Error('wrong buttons', buttons);
+
+    let url = `/pages/msg/msg?code=${c}&message=${m}`;
+    if (buttons && buttons.length) {
+      url += `&buttons=${ encodeURIComponent(JSON.stringify(buttons)) }`;
+    }
+    if (iconUrl) {
+      url += `&icon=${iconUrl}`;
+    }
+
+    wx.navigateTo({url});
+  },
+
+  //普通请求前校验失败后的重新登录
+  reLogin() {
+    appSession.onSessionFail();
+  },
+
+  //用户已经授权后(由userinfo页面调用)
+  onUserinfoGot(userinfo) {
+    appSession.onUserinfoGot(userinfo);
   }
 })

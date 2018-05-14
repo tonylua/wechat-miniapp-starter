@@ -11,9 +11,16 @@ module.exports = (app, prefix)=>{
    */
   app.get(`${prefix}/index`, function(req, res) {
 
+    const {
+      login_state
+    } = req.query;
+
+    console.log('/index', login_state);
+
     res.json({
       errcode: 0, //random(0, 1),
       errmsg: '很抱歉发生了某些错误',
+      errlevel: 'default',
       result: {
         miaosha:  {
           more_url: "http://m.baidu.com",

@@ -16,7 +16,7 @@
 ### 2.1 代码和调试
 
 - 拉取本项目中的代码
-- 修改 /public/project.config.json 中的 projectname
+- 修改 /public/project.config.json 中的 name 和 repository
 - 用“微信web开发者工具”添加项目，填入 AppID，并将以上代码中的`public`目录设置为项目目录
 - 进入项目后，将开发者工具“详情”选项中的“ES6转ES5”等所有选项都勾选
 - 将`/public/app.config.js`中的协议、端口等改为自己的配置；! 注意：如果是前端开发时，修改`dev.config.js`，会自动生成覆盖前者的内容 !

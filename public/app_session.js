@@ -12,27 +12,20 @@ const extendMyParams = (...args)=>{
 
 //方法：登录并获取第三方信息
 const loginAndGetExt = (succCallback, failCallback)=>{
-  wx.login({
-    success(loginRes) {
+  wx.p.login().then(loginRes=>{
       if (!loginRes.code) {
         failCallback(loginRes.errMsg);
         return;
       }
-      wx.getExtConfig({
-        success(extCfgRes) {
+      wx.p.getExtConfig()
+        .then(extCfgRes=>{
           const obj = assign({}, loginRes, extCfgRes);
           console.log('[app.js] login & getExtConfig', obj);
           succCallback(obj);
-        }, //end of getExtConfig-success
-        fail() {
-          failCallback(_app.locale.userInfoModal.extFail);
-        }
-      });
-    }, //end of login-success
-    fail(ex) {
-      failCallback(ex);
-    }
-  });
+        })
+        .catch(ex=>failCallback(_app.locale.userInfoModal.extFail));
+    })
+    .catch(failCallback);
 };
 
 //方法：session失效后的重新请求
@@ -76,20 +69,9 @@ const confirmLogin = (result)=>{
   const { msg, btn } = result.login_confirm;
 
   setTimeout(()=>{
-    wx.reLaunch({
-      url: `/pages/userinfo/userinfo?code=401&message=${msg}&buttons=`
-        + encodeURIComponent(JSON.stringify([{
-            label: btn,
-            type: 'primary',
-            opentype: 'getUserInfo'
-          }])),
-      success() {
-        console.log('[app.js] ========== jump to login', msg, btn);
-      },
-      fail(ex) {
-        console.log(ex)
-      }
-    });
+    wx.p.reLaunch({url: `/pages/userinfo/userinfo?message=${msg}&button=${btn}`})
+      .then(res=>console.log('[app.js] ========== jump to login', msg, btn))
+      .catch(console.log);
   }, 500);
 };
 
@@ -112,22 +94,16 @@ const finish = (isFromLocal=false)=>{
   }
   
   setTimeout(()=>{
-    wx.reLaunch({
-      url,
-      success() {
-        console.log("reLaunch succ", _app.globalData.login_state);
-      },
-      fail(ex) {
-        console.log("reLaunch fail", ex)
-      },
-      complete() {
+    wx.p.reLaunch({url})
+      .then(res=>console.log("reLaunch succ", _app.globalData.login_state))
+      .catch(ex=>console.log("reLaunch fail", ex))
+      .finally( ()=>{
         console.log('CHK SESSION FINISH', _app.initializing);
         if (_app.hasOwnProperty('initializing')) {
           _app.initializing = false;
           delete _app.initializing;
         }
-      }
-    });
+      } );
   }, 500);
 
 };
@@ -158,8 +134,8 @@ const checkAfterAppLaunch = (app, launchParams)=>{
   _app = app;
   _app.initializing = true;
 
-  wx.checkSession({
-    success() {
+  wx.p.checkSession()
+    .then(res=>{
       const localGlobalData = wx.getStorageSync('global_data');
       const localLoginState = wx.getStorageSync('login_state');
       const localUserInfo = wx.getStorageSync('user_info');
@@ -183,12 +159,10 @@ const checkAfterAppLaunch = (app, launchParams)=>{
       }
 
       onSessionFail();
-    },
-    fail() {
+    }).catch(ex=>{
       console.log("[app.js] onLaunch checkSession fail", _params);
       onSessionFail();
-    }
-  });
+    });
 };
 
 

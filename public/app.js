@@ -1,4 +1,5 @@
 const { assign } = require('utils/object');
+const { promisify } = require('utils/api');
 const appSession = require('./app_session');
 const locale = require('./locale');
 
@@ -10,30 +11,41 @@ App({
   locale,
   requesting: false,
   globalData: {},
+
+  _promisify() {
+    const keys = Object.keys(wx)
+      .filter(key=>typeof wx[key]==='function')
+      .filter(key=>!/Sync$/.test(key));
+    wx.p = {};
+    keys.forEach(method=>wx.p[method]=promisify(wx[method]));
+  },
   
   onLaunch(launchParams) {
-    console.log('app.js onLaunch', launchParams)
+    console.log('app.js onLaunch', launchParams);
+    
+    this._promisify();
+
     _app = this;
     wx.setStorageSync('launch_params', launchParams);
     appSession.checkAfterAppLaunch(_app, launchParams);
   },
 
-  onShow(launchParams) {
-    console.log('app onShow', launchParams, getCurrentPages().map(p=>p.route));
+  onShow(showParams) {
+    console.log('app onShow', showParams, getCurrentPages().map(p=>p.route));
 
-    wx.setStorageSync('launch_params', launchParams);
-
+    wx.setStorageSync('launch_params', showParams);
     if (_app && _app.globalData) {
-      assign(_app.globalData, launchParams);
+      assign(_app.globalData, showParams);
     }
-    
+
+    const qStr = '?' + Object.keys(_app.globalData.query)
+        .map(item=>`${item}=${encodeURIComponent(
+          decodeURIComponent(_app.globalData.query[item])
+        )}`).join('&');
+
     if (getCurrentPages().length > 1) {
-      wx.reLaunch({
-        url: '/pages/index/index',
-        complete() {
-          console.log('reLaunch in app_onShow ok');
-        }
-      });
+      wx.reLaunch({url: `/pages/index/index${qStr}`})
+        .finally(()=>'reLaunch in app_onShow ok');
     }
   },
 

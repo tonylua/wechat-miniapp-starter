@@ -184,6 +184,13 @@ app.alert(msg, okCallback);
 app.showMessagePage(errcode, errmsg, [{label, type, route}], iconUrl);
 ```
 
+### 3.5 `wx.` 方法的 Promise 化调用
+
+- 所有非 `Sync` 的 `wx.foo()` 方法(限 {success, fail} 单参数的)，都可以用 `wx.p.foo()` 等效调用
+- `wx.foo({success: xxx})` 可用 `wx.p.foo().then(res=>{})` 代替
+- `wx.foo({fail: xxx})` 可用 `wx.p.foo().catch(ex=>{})` 代替
+- `wx.foo({complete: xxx})` 可用 `wx.p.foo().finally(()=>{})` 代替
+
 ## 4 涉及技术
 
 - [微信小程序官方文档](https://mp.weixin.qq.com/debug/wxadoc/dev/)

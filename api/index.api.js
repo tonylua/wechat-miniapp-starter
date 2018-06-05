@@ -25,7 +25,7 @@ module.exports = (app, prefix)=>{
         miaosha:  {
           more_url: "http://m.baidu.com",
           current: {
-            begin_time: (new Date("2018/04/20 20:07:10")).getTime(),
+            begin_time: (new Date("2018/12/20 20:07:10")).getTime(),
             pic: "http://p3.ifengimg.com/a/2018_15/1ffe0fd6d36a04c.png",
             title: "内蒙古大瓜子",
             price: random(1,9),
